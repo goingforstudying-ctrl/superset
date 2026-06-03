@@ -104,6 +104,20 @@ class UserInfo(BaseModel):
         "access via get_user_info; not available in list_users because roles "
         "is a relationship, not a selectable column)",
     )
+
+    @field_validator("roles", mode="before")
+    @classmethod
+    def _extract_role_names(cls, v: Any) -> list[str] | None:
+        """Coerce Role ORM objects to their .name strings."""
+        if v is None:
+            return None
+        result: list[str] = []
+        for item in v:
+            if isinstance(item, str):
+                result.append(item)
+            elif hasattr(item, "name"):
+                result.append(str(item.name))
+        return result if result else None
     changed_on: str | datetime | None = Field(
         None, description="Last modification timestamp"
     )
