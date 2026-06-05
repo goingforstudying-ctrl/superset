@@ -111,13 +111,19 @@ class UserInfo(BaseModel):
         """Coerce Role ORM objects to their .name strings."""
         if v is None:
             return None
+        if isinstance(v, str):
+            # Preserve Pydantic's default rejection of bare strings for list[str].
+            raise ValueError("roles must be a list, not a string")
         result: list[str] = []
         for item in v:
             if isinstance(item, str):
                 result.append(item)
             elif hasattr(item, "name"):
-                result.append(str(item.name))
-        return result if result else None
+                try:
+                    result.append(str(item.name))
+                except DetachedInstanceError:
+                    continue
+        return result
     changed_on: str | datetime | None = Field(
         None, description="Last modification timestamp"
     )
