@@ -124,6 +124,7 @@ class UserInfo(BaseModel):
                 except DetachedInstanceError:
                     continue
         return result
+
     changed_on: str | datetime | None = Field(
         None, description="Last modification timestamp"
     )
