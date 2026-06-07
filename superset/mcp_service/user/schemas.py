@@ -19,8 +19,11 @@
 
 from __future__ import annotations
 
+import logging
 from datetime import datetime, timezone
 from typing import Annotated, Any, List, Literal
+
+logger = logging.getLogger(__name__)
 
 from pydantic import (
     BaseModel,
@@ -118,11 +121,15 @@ class UserInfo(BaseModel):
         for item in v:
             if isinstance(item, str):
                 result.append(item)
-            elif hasattr(item, "name"):
-                try:
-                    result.append(str(item.name))
-                except DetachedInstanceError:
-                    continue
+                continue
+            try:
+                if hasattr(item, "name") and isinstance(item.name, str):
+                    result.append(item.name)
+            except DetachedInstanceError:
+                logger.debug(
+                    "Skipping role with detached instance in UserInfo.roles coercion"
+                )
+                continue
         return result
 
     changed_on: str | datetime | None = Field(
