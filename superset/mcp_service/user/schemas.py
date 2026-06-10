@@ -323,8 +323,6 @@ def serialize_user_object(
         email=escape_llm_context_delimiters(getattr(user, "email", None))
         if include_sensitive
         else None,
-        roles=[sanitize_for_llm_context(r, field_path=("roles",)) for r in roles]
-        if roles is not None
-        else None,
+        roles=roles,
         changed_on=getattr(user, "changed_on", None),
     )
