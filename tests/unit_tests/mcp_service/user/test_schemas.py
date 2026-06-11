@@ -54,8 +54,13 @@ def test_user_info_ignores_role_with_detached_instance() -> None:
     """Detached ORM roles must not blow up serialization."""
     role_good = MagicMock()
     role_good.name = "Admin"
-    role_detached = MagicMock()
-    role_detached.name = MagicMock(side_effect=DetachedInstanceError())
+
+    class DetachedRole:
+        @property
+        def name(self):
+            raise DetachedInstanceError()
+
+    role_detached = DetachedRole()
 
     info = UserInfo(roles=[role_good, role_detached])
 
