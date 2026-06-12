@@ -306,7 +306,11 @@ def serialize_user_object(
         user_roles = getattr(user, "roles", None)
         if user_roles is not None:
             try:
-                roles = [r.name for r in user_roles if hasattr(r, "name")]
+                roles = [
+                    escape_llm_context_delimiters(r.name)
+                    for r in user_roles
+                    if hasattr(r, "name") and isinstance(r.name, str)
+                ]
             except (AttributeError, DetachedInstanceError):
                 roles = None
 

@@ -83,6 +83,11 @@ def test_serialize_user_object_round_trip_with_empty_roles() -> None:
 
     assert info is not None
     assert info.roles == []
+    assert info.username == "admin"
+    assert info.first_name == "Admin"
+    assert info.last_name == "User"
+    assert info.active is True
+    assert info.email == "admin@example.com"
 
 
 def test_serialize_user_object_round_trip_with_role_objects() -> None:
@@ -104,3 +109,8 @@ def test_serialize_user_object_round_trip_with_role_objects() -> None:
 
     assert info is not None
     assert info.roles == ["Admin"]
+    assert info.username == "admin"
+    assert info.first_name == "Admin"
+    assert info.last_name == "User"
+    assert info.active is True
+    assert info.email == "admin@example.com"
