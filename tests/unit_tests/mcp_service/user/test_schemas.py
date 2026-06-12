@@ -23,7 +23,11 @@ import pytest
 from pydantic import ValidationError
 from sqlalchemy.orm.exc import DetachedInstanceError
 
-from superset.mcp_service.user.schemas import UserInfo, serialize_user_object
+from superset.mcp_service.user.schemas import (
+    sanitize_for_llm_context,
+    serialize_user_object,
+    UserInfo,
+)
 
 
 def test_user_info_rejects_bare_string_for_roles() -> None:
