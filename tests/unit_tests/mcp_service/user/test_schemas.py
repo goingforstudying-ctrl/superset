@@ -60,8 +60,10 @@ def test_user_info_ignores_role_with_detached_instance() -> None:
     role_good.name = "Admin"
 
     class DetachedRole:
+        """Mock ORM role that raises DetachedInstanceError on name access."""
+
         @property
-        def name(self):
+        def name(self) -> str:
             raise DetachedInstanceError()
 
     role_detached = DetachedRole()
@@ -169,7 +171,7 @@ def test_serialize_user_object_skips_email_when_include_sensitive_false() -> Non
 
     assert info is not None
     assert info.email is None
-    assert info.roles == ["Admin"]
+    assert info.roles is None
 
 
 def test_serialize_user_object_returns_none_for_falsy_user() -> None:

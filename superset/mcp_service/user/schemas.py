@@ -305,14 +305,17 @@ def serialize_user_object(
     if include_sensitive and include_roles:
         user_roles = getattr(user, "roles", None)
         if user_roles is not None:
-            try:
-                roles = [
-                    escape_llm_context_delimiters(r.name)
-                    for r in user_roles
-                    if hasattr(r, "name") and isinstance(r.name, str)
-                ]
-            except (AttributeError, DetachedInstanceError):
-                roles = None
+            roles = []
+            for r in user_roles:
+                try:
+                    if hasattr(r, "name") and isinstance(r.name, str):
+                        roles.append(escape_llm_context_delimiters(r.name))
+                except (AttributeError, DetachedInstanceError):
+                    logger.debug(
+                        "Skipping role with detached instance in "
+                        "serialize_user_object roles extraction"
+                    )
+                    continue
 
     return UserInfo(
         id=getattr(user, "id", None),
