@@ -93,9 +93,7 @@ def test_serialize_user_object_round_trip_with_empty_roles() -> None:
     assert info.first_name == sanitize_for_llm_context(
         "Admin", field_path=("first_name",)
     )
-    assert info.last_name == sanitize_for_llm_context(
-        "User", field_path=("last_name",)
-    )
+    assert info.last_name == sanitize_for_llm_context("User", field_path=("last_name",))
     assert info.active is True
     assert info.email == "admin@example.com"
 
@@ -123,9 +121,7 @@ def test_serialize_user_object_round_trip_with_role_objects() -> None:
     assert info.first_name == sanitize_for_llm_context(
         "Admin", field_path=("first_name",)
     )
-    assert info.last_name == sanitize_for_llm_context(
-        "User", field_path=("last_name",)
-    )
+    assert info.last_name == sanitize_for_llm_context("User", field_path=("last_name",))
     assert info.active is True
     assert info.email == "admin@example.com"
 
