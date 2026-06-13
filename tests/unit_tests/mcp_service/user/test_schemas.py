@@ -126,3 +126,54 @@ def test_serialize_user_object_round_trip_with_role_objects() -> None:
     )
     assert info.active is True
     assert info.email == "admin@example.com"
+
+
+def test_serialize_user_object_skips_roles_when_include_roles_false() -> None:
+    """serialize_user_object must return roles=None when include_roles=False."""
+    role_admin = MagicMock()
+    role_admin.name = "Admin"
+
+    user = MagicMock()
+    user.id = 1
+    user.username = "admin"
+    user.first_name = "Admin"
+    user.last_name = "User"
+    user.active = True
+    user.email = "admin@example.com"
+    user.changed_on = None
+    user.roles = [role_admin]
+
+    info = serialize_user_object(user, include_sensitive=True, include_roles=False)
+
+    assert info is not None
+    assert info.roles is None
+    assert info.email == "admin@example.com"
+
+
+def test_serialize_user_object_skips_email_when_include_sensitive_false() -> None:
+    """serialize_user_object must return email=None when include_sensitive=False."""
+    role_admin = MagicMock()
+    role_admin.name = "Admin"
+
+    user = MagicMock()
+    user.id = 1
+    user.username = "admin"
+    user.first_name = "Admin"
+    user.last_name = "User"
+    user.active = True
+    user.email = "admin@example.com"
+    user.changed_on = None
+    user.roles = [role_admin]
+
+    info = serialize_user_object(user, include_sensitive=False, include_roles=True)
+
+    assert info is not None
+    assert info.email is None
+    assert info.roles == ["Admin"]
+
+
+def test_serialize_user_object_returns_none_for_falsy_user() -> None:
+    """serialize_user_object must return None for user=None, user=0, user=''."""
+    assert serialize_user_object(None) is None
+    assert serialize_user_object(0) is None
+    assert serialize_user_object("") is None
